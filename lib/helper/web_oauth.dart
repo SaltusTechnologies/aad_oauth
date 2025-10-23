@@ -70,7 +70,7 @@ class WebOAuth extends CoreOAuth {
         isB2C: config.isB2C,
         customAuthorizationUrl: config.customAuthorizationUrl,
         customTokenUrl: config.customTokenUrl,
-        loginHint: config.loginHint,
+        //loginHint: config.loginHint,
         domainHint: config.domainHint,
         codeVerifier: config.codeVerifier,
         authorizationUrl: config.authorizationUrl,
@@ -95,8 +95,10 @@ class WebOAuth extends CoreOAuth {
       Future<bool>.value(jsHasCachedAccountInformation());
 
   @override
-  Future<Either<Failure, Token>> login(
-      {bool refreshIfAvailable = false}) async {
+  Future<Either<Failure, Token>> login({
+    bool refreshIfAvailable = false,
+    String? loginHint,
+  }) async {
     final completer = Completer<Either<Failure, Token>>();
 
     jsLogin(

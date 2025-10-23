@@ -28,9 +28,9 @@ class AuthorizationRequest {
       parameters.putIfAbsent('prompt', () => config.prompt!);
     }
 
-    if (config.loginHint != null) {
-      parameters.putIfAbsent('login_hint', () => config.loginHint!);
-    }
+    // if (config.loginHint != null) {
+    //   parameters.putIfAbsent('login_hint', () => config.loginHint!);
+    // }
 
     if (config.domainHint != null) {
       parameters.putIfAbsent('domain_hint', () => config.domainHint!);

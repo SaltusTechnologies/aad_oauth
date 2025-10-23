@@ -78,7 +78,8 @@ class Config {
 
   ///	Can be used to pre-fill the username/email address field of the sign-in page for the user, if you know their username ahead of time.
   /// Often apps will use this parameter during re-authentication, having already extracted the username from a previous sign-in using the preferred_username claim.
-  String? loginHint;
+  // ignore: provide_deprecation_message
+  //String? loginHint;
 
   /// If included, it will skip the email-based discovery process that user goes through on the sign-in page, leading to a slightly more streamlined user experience - for example, sending them to their federated identity provider.
   /// Often apps will use this parameter during re-authentication, by extracting the tid from a previous sign-in.
@@ -210,7 +211,7 @@ class Config {
     this.customAuthorizationUrl,
     this.customTokenUrl,
     this.customDomainUrlWithTenantId,
-    this.loginHint,
+    //this.loginHint,
     this.domainHint,
     this.codeVerifier,
     this.userAgent,
@@ -224,18 +225,17 @@ class Config {
     this.postLogoutRedirectUri,
     this.appBar,
     this.onPageFinished,
-  })
-      : authorizationUrl = customAuthorizationUrl ??
-      (isB2C
-          ? (customDomainUrlWithTenantId == null
-          ? 'https://$tenant.b2clogin.com/$tenant.onmicrosoft.com/$policy/oauth2/v2.0/authorize'
-          : '$customDomainUrlWithTenantId/$policy/oauth2/v2.0/authorize')
-          : 'https://login.microsoftonline.com/$tenant/oauth2/v2.0/authorize'),
+  })  : authorizationUrl = customAuthorizationUrl ??
+            (isB2C
+                ? (customDomainUrlWithTenantId == null
+                    ? 'https://$tenant.b2clogin.com/$tenant.onmicrosoft.com/$policy/oauth2/v2.0/authorize'
+                    : '$customDomainUrlWithTenantId/$policy/oauth2/v2.0/authorize')
+                : 'https://login.microsoftonline.com/$tenant/oauth2/v2.0/authorize'),
         tokenUrl = customTokenUrl ??
             (isB2C
                 ? (customDomainUrlWithTenantId == null
-                ? 'https://$tenant.b2clogin.com/$tenant.onmicrosoft.com/$policy/oauth2/v2.0/token'
-                : '$customDomainUrlWithTenantId/$policy/oauth2/v2.0/token')
+                    ? 'https://$tenant.b2clogin.com/$tenant.onmicrosoft.com/$policy/oauth2/v2.0/token'
+                    : '$customDomainUrlWithTenantId/$policy/oauth2/v2.0/token')
                 : 'https://login.microsoftonline.com/$tenant/oauth2/v2.0/token'),
         aOptions = aOptions ?? AndroidOptions(encryptedSharedPreferences: true),
         cacheLocation = cacheLocation ?? CacheLocation.localStorage,
@@ -295,12 +295,12 @@ class Config {
       clientSecret: clientSecret ?? this.clientSecret,
       resource: resource ?? this.resource,
       isB2C: isB2C ?? this.isB2C,
-      customAuthorizationUrl: customAuthorizationUrl ??
-          this.customAuthorizationUrl,
+      customAuthorizationUrl:
+          customAuthorizationUrl ?? this.customAuthorizationUrl,
       customTokenUrl: customTokenUrl ?? this.customTokenUrl,
-      customDomainUrlWithTenantId: customDomainUrlWithTenantId ??
-          this.customDomainUrlWithTenantId,
-      loginHint: loginHint ?? this.loginHint,
+      customDomainUrlWithTenantId:
+          customDomainUrlWithTenantId ?? this.customDomainUrlWithTenantId,
+      //loginHint: loginHint ?? this.loginHint,
       domainHint: domainHint ?? this.domainHint,
       codeVerifier: codeVerifier ?? this.codeVerifier,
       userAgent: userAgent ?? this.userAgent,
@@ -312,7 +312,7 @@ class Config {
       origin: origin ?? this.origin,
       customParameters: customParameters ?? this.customParameters,
       postLogoutRedirectUri:
-      postLogoutRedirectUri ?? this.postLogoutRedirectUri,
+          postLogoutRedirectUri ?? this.postLogoutRedirectUri,
       appBar: appBar ?? this.appBar,
       onPageFinished: onPageFinished ?? this.onPageFinished,
     );

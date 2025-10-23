@@ -24,10 +24,10 @@ class RequestCode {
     _cookieManager = WebViewCookieManager();
   }
 
-  Future<String?> requestCode() async {
+  Future<String?> requestCode({String? loginHint}) async {
     _code = null;
 
-    final urlParams = _constructUrlParams();
+    final urlParams = _constructUrlParams(loginHint: loginHint);
     final launchUri = Uri.parse('${_authorizationRequest.url}?$urlParams');
     final controller = WebViewController();
     await controller.setNavigationDelegate(_navigationDelegate);
@@ -61,7 +61,7 @@ class RequestCode {
           appBar: _config.appBar,
           body: PopScope(
             canPop: false,
-            onPopInvoked: (bool didPop) async {
+            onPopInvokedWithResult: (didPop, result) async {
               if (didPop) return;
               if (await controller.canGoBack()) {
                 await controller.goBack();
@@ -105,11 +105,11 @@ class RequestCode {
     await _cookieManager.clearCookies();
   }
 
-  String _constructUrlParams() => _mapToQueryParams(
-      _authorizationRequest.parameters, _config.customParameters);
+  String _constructUrlParams({String? loginHint}) => _mapToQueryParams(
+      _authorizationRequest.parameters, _config.customParameters, loginHint);
 
-  String _mapToQueryParams(
-      Map<String, String> params, Map<String, String> customParams) {
+  String _mapToQueryParams(Map<String, String> params,
+      Map<String, String> customParams, String? loginHint) {
     final queryParams = <String>[];
 
     params.forEach((String key, String value) =>
@@ -117,6 +117,10 @@ class RequestCode {
 
     customParams.forEach((String key, String value) =>
         queryParams.add('$key=${Uri.encodeQueryComponent(value)}'));
+
+    if (loginHint != null && loginHint.isNotEmpty) {
+      queryParams.add('login_hint=${Uri.encodeQueryComponent(loginHint)}');
+    }
     return queryParams.join('&');
   }
 }

@@ -36,10 +36,15 @@ class MobileOAuth extends CoreOAuth {
   /// will be returned, as long as we deem it still valid. In the event that
   /// both access and refresh tokens are invalid, the web gui will be used.
   @override
-  Future<Either<Failure, Token>> login(
-      {bool refreshIfAvailable = false}) async {
+  Future<Either<Failure, Token>> login({
+    bool refreshIfAvailable = false,
+    String? loginHint,
+  }) async {
     await _removeOldTokenOnFirstLogin();
-    return await _authorization(refreshIfAvailable: refreshIfAvailable);
+    return await _authorization(
+      refreshIfAvailable: refreshIfAvailable,
+      loginHint: loginHint,
+    );
   }
 
   /// Tries to silently login. will try to use the existing refresh token to get
@@ -120,8 +125,10 @@ class MobileOAuth extends CoreOAuth {
   /// still be valid. If there's no refresh token the existing access token
   /// will be returned, as long as we deem it still valid. In the event that
   /// both access and refresh tokens are invalid, the web gui will be used.
-  Future<Either<Failure, Token>> _authorization(
-      {bool refreshIfAvailable = false}) async {
+  Future<Either<Failure, Token>> _authorization({
+    bool refreshIfAvailable = false,
+    String? loginHint,
+  }) async {
     var token = await _authStorage.loadTokenFromCache();
 
     if (!refreshIfAvailable) {
@@ -142,7 +149,9 @@ class MobileOAuth extends CoreOAuth {
     }
 
     if (!token.hasValidAccessToken()) {
-      final result = await _performFullAuthFlow();
+      final result = await _performFullAuthFlow(
+        loginHint: loginHint,
+      );
       Failure? failure;
       result.fold(
         (l) => failure = l,
@@ -158,8 +167,12 @@ class MobileOAuth extends CoreOAuth {
   }
 
   /// Authorize user via refresh token or web gui if necessary.
-  Future<Either<Failure, Token>> _performFullAuthFlow() async {
-    var code = await _requestCode.requestCode();
+  Future<Either<Failure, Token>> _performFullAuthFlow({
+    String? loginHint,
+  }) async {
+    var code = await _requestCode.requestCode(
+      loginHint: loginHint,
+    );
     if (code == null) {
       return Left(AadOauthFailure(
         errorType: ErrorType.accessDeniedOrAuthenticationCanceled,
